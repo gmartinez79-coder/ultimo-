@@ -1,0 +1,1684 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Dictado - Confirmación de Guardado</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 25px;
+            overflow-x: auto;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        .description {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #7f8c8d;
+        }
+        
+        .setup-panel {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .setup-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .input-group label {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        
+        .input-group input {
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            width: 150px;
+        }
+        
+        .limits-config {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 2px solid #3498db;
+        }
+        
+        .limits-config h4 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .add-cota-section {
+            background: #d4edda;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 2px solid #c3e6cb;
+        }
+        
+        .add-cota-controls {
+            display: flex;
+            gap: 10px;
+            align-items: end;
+            flex-wrap: wrap;
+        }
+        
+        .add-cota-controls .input-group {
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .add-cota-controls .input-group input {
+            width: 100%;
+        }
+        
+        .limits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .limit-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+        
+        .limit-item-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 100px;
+        }
+        
+        .cota-name {
+            font-weight: bold;
+            color: #2c3e50;
+            min-width: 40px;
+        }
+        
+        .limit-inputs {
+            display: flex;
+            gap: 5px;
+            flex: 1;
+        }
+        
+        .limit-item input {
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 80px;
+            text-align: center;
+        }
+        
+        .delete-cota {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 10px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .delete-cota:hover {
+            background: #c0392b;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #27ae60;
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+        }
+        
+        .btn-warning {
+            background-color: #f39c12;
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background-color: #e67e22;
+            transform: translateY(-2px);
+        }
+        
+        .btn-info {
+            background-color: #17a2b8;
+            color: white;
+        }
+        
+        .btn-info:hover {
+            background-color: #138496;
+            transform: translateY(-2px);
+        }
+        
+        .btn-save {
+            background-color: #9b59b6;
+            color: white;
+        }
+        
+        .btn-save:hover {
+            background-color: #8e44ad;
+            transform: translateY(-2px);
+        }
+        
+        .icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .status {
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .listening {
+            background-color: #fff9e6;
+            color: #e67e22;
+            border: 1px solid #f1c40f;
+            display: block;
+        }
+        
+        .success {
+            background-color: #e8f8f5;
+            color: #27ae60;
+            border: 1px solid #2ecc71;
+            display: block;
+        }
+        
+        .error {
+            background-color: #fdeded;
+            color: #e74c3c;
+            border: 1px solid #e74c3c;
+            display: block;
+        }
+        
+        .warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+            display: block;
+        }
+        
+        .tabs-container {
+            margin-bottom: 20px;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            background: #e0e0e0;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .tab.active {
+            background: #3498db;
+            color: white;
+        }
+        
+        .tab.completed {
+            background: #2ecc71;
+            color: white;
+        }
+        
+        .tab.has-changes {
+            background: #f39c12;
+            color: white;
+        }
+        
+        .tab:hover:not(.active) {
+            background: #bdc3c7;
+        }
+        
+        .table-container {
+            display: none;
+            margin-bottom: 30px;
+        }
+        
+        .table-container.active {
+            display: block;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px 15px;
+            text-align: center;
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        tr:hover {
+            background-color: #e8f4fd;
+        }
+        
+        .active-cell {
+            background-color: #2ecc71 !important;
+            color: white;
+            font-weight: bold;
+            box-shadow: inset 0 0 0 2px #27ae60;
+        }
+        
+        .out-of-range {
+            background-color: #ffebee !important;
+            color: #c62828;
+            font-weight: bold;
+            border: 2px solid #f44336;
+        }
+        
+        .within-range {
+            background-color: #e8f5e8 !important;
+            color: #2e7d32;
+            border: 2px solid #4caf50;
+        }
+        
+        .current-position {
+            margin-bottom: 15px;
+            font-weight: 500;
+            color: #2c3e50;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .instructions {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .instructions h3 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .instructions ul {
+            margin-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        .navigation-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 15px 0;
+            padding: 10px;
+            background: #e8f4fd;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .nav-arrow {
+            font-size: 24px;
+            margin: 0 15px;
+            color: #3498db;
+        }
+        
+        .auto-advance-toggle {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: #fff3cd;
+            border-radius: 8px;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+            margin-left: 10px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: #2ecc71;
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #2ecc71;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-text {
+            text-align: center;
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        /* Modal de confirmación */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .modal {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+        
+        .modal h3 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        
+        .modal p {
+            margin-bottom: 25px;
+            color: #7f8c8d;
+            line-height: 1.5;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .modal-buttons button {
+            min-width: 120px;
+        }
+        
+        .save-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #2ecc71;
+            margin-left: 10px;
+            animation: pulse 2s infinite;
+        }
+        
+        .unsaved-changes {
+            background: #e74c3c !important;
+            animation: pulse-warning 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        @keyframes pulse-warning {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+        
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            
+            .setup-controls {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .add-cota-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .modal-buttons {
+                flex-direction: column;
+            }
+            
+            table {
+                font-size: 14px;
+            }
+            
+            th, td {
+                padding: 8px 10px;
+            }
+            
+            .navigation-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .nav-arrow {
+                transform: rotate(90deg);
+                margin: 10px 0;
+            }
+        }
+
+        /* Mejoras para móviles */
+        .mobile-voice-info {
+            background: #e8f4fd;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #3498db;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sistema de Dictado - Confirmación de Guardado</h1>
+        <p class="description">
+            Gestión de mediciones con confirmación de cambios 
+            <span id="saveIndicator" class="save-indicator unsaved-changes" title="Hay cambios sin guardar"></span>
+        </p>
+
+        <!-- Información para móviles -->
+        <div class="mobile-voice-info" id="mobileVoiceInfo" style="display: none;">
+            <strong>Para usar voz en móvil:</strong> Asegúrate de usar Chrome y permitir el acceso al micrófono.
+        </div>
+        
+        <div class="setup-panel">
+            <h3>Configuración de Piezas</h3>
+            <div class="setup-controls">
+                <div class="input-group">
+                    <label for="pieceCount">Número de Piezas:</label>
+                    <input type="number" id="pieceCount" min="1" max="20" value="1">
+                </div>
+                <div class="input-group">
+                    <label for="piecePrefix">Prefijo de Piezas:</label>
+                    <input type="text" id="piecePrefix" value="PIEZA" placeholder="Ej: PIEZA, LOTE, etc.">
+                </div>
+                <button id="createTablesBtn" class="btn-success">
+                    <span class="icon">📊</span> Crear Tablas
+                </button>
+                <button id="saveDataBtn" class="btn-save">
+                    <span class="icon">💾</span> Guardar Cambios
+                </button>
+            </div>
+            
+            <div class="limits-config">
+                <h4>Configuración de Límites por COTA</h4>
+                
+                <div class="add-cota-section">
+                    <h5>Agregar Nueva Cota</h5>
+                    <div class="add-cota-controls">
+                        <div class="input-group">
+                            <label for="newCotaName">Nombre Cota:</label>
+                            <input type="text" id="newCotaName" placeholder="Ej: F, G, H..." maxlength="3">
+                        </div>
+                        <div class="input-group">
+                            <label for="newCotaMin">Valor Mínimo:</label>
+                            <input type="number" step="0.01" id="newCotaMin" placeholder="0.00">
+                        </div>
+                        <div class="input-group">
+                            <label for="newCotaMax">Valor Máximo:</label>
+                            <input type="number" step="0.01" id="newCotaMax" placeholder="0.00">
+                        </div>
+                        <button id="addCotaBtn" class="btn-success">
+                            <span class="icon">➕</span> Agregar Cota
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="limits-grid" id="limitsGrid">
+                    <!-- Las cotas se generarán dinámicamente -->
+                </div>
+                <button id="applyLimitsBtn" class="btn-primary" style="margin-top: 10px;">
+                    <span class="icon">✅</span> Aplicar Límites a Todas las Piezas
+                </button>
+            </div>
+        </div>
+        
+        <div class="progress-text" id="progressText">Progreso: Pieza 1 de 1 (0%)</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+        
+        <div class="navigation-info">
+            <span>⬆️ Desplazamiento VERTICAL ⬇️</span>
+            <div class="nav-arrow">↓</div>
+            <span>Se llena por COLUMNAS (P1, P2, P3...)</span>
+        </div>
+        
+        <div class="auto-advance-toggle">
+            <span><strong>Dictado continuo:</strong> El dictado permanece activo entre campos y piezas</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="autoAdvanceToggle" checked>
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+        
+        <div class="controls">
+            <button id="voiceBtn" class="btn-primary">
+                <span class="icon">🎤</span> Iniciar Dictado Continuo
+            </button>
+            <button id="nextBtn" class="btn-success">
+                <span class="icon">↓</span> Siguiente Campo (Abajo)
+            </button>
+            <button id="prevBtn" class="btn-primary">
+                <span class="icon">↑</span> Campo Anterior (Arriba)
+            </button>
+            <button id="nextColumnBtn" class="btn-primary">
+                <span class="icon">→</span> Siguiente Columna
+            </button>
+            <button id="nextTableBtn" class="btn-info">
+                <span class="icon">➡️</span> Siguiente Pieza
+            </button>
+            <button id="stopBtn" class="btn-warning">
+                <span class="icon">⏹️</span> Detener Dictado
+            </button>
+            <button id="clearBtn" class="btn-danger">
+                <span class="icon">🗑️</span> Limpiar Todo
+            </button>
+            <button id="exportBtn" class="btn-success">
+                <span class="icon">📊</span> Exportar a Excel
+            </button>
+        </div>
+        
+        <div id="status" class="status"></div>
+        
+        <div class="current-position" id="currentPosition">
+            Posición actual: PIEZA 1 - COTA A - P1
+        </div>
+        
+        <div class="tabs-container" id="tabsContainer" style="display: none;">
+            <div class="tabs" id="tabs"></div>
+        </div>
+        
+        <div id="tablesContainer"></div>
+        
+        <div class="instructions">
+            <h3>Instrucciones de uso (Confirmación de Guardado):</h3>
+            <ul>
+                <li><strong>Indicador de cambios:</strong> El punto rojo parpadeante indica cambios sin guardar</li>
+                <li><strong>Guardado manual:</strong> Usa el botón "Guardar Cambios" para guardar manualmente</li>
+                <li><strong>Confirmaciones:</strong> El sistema pregunta antes de realizar acciones que podrían perder datos</li>
+                <li><strong>Guardado automático:</strong> Algunas acciones guardan automáticamente</li>
+                <li><strong>Prevención de pérdida:</strong> Se te avisará si intentas salir con cambios sin guardar</li>
+                <li><strong>Voz en móviles:</strong> Funciona en Chrome Android. Permite el acceso al micrófono cuando se solicite.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Modal de confirmación -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal">
+            <h3 id="modalTitle">Confirmar acción</h3>
+            <p id="modalMessage">¿Estás seguro de que quieres realizar esta acción? Los cambios no guardados se perderán.</p>
+            <div class="modal-buttons">
+                <button id="modalConfirmBtn" class="btn-danger">Continuar</button>
+                <button id="modalCancelBtn" class="btn-primary">Cancelar</button>
+                <button id="modalSaveBtn" class="btn-success" style="display: none;">Guardar y Continuar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Biblioteca para exportar a Excel -->
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elementos del DOM
+            const pieceCountInput = document.getElementById('pieceCount');
+            const piecePrefixInput = document.getElementById('piecePrefix');
+            const createTablesBtn = document.getElementById('createTablesBtn');
+            const saveDataBtn = document.getElementById('saveDataBtn');
+            const applyLimitsBtn = document.getElementById('applyLimitsBtn');
+            const addCotaBtn = document.getElementById('addCotaBtn');
+            const newCotaNameInput = document.getElementById('newCotaName');
+            const newCotaMinInput = document.getElementById('newCotaMin');
+            const newCotaMaxInput = document.getElementById('newCotaMax');
+            const limitsGrid = document.getElementById('limitsGrid');
+            const voiceBtn = document.getElementById('voiceBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextColumnBtn = document.getElementById('nextColumnBtn');
+            const nextTableBtn = document.getElementById('nextTableBtn');
+            const stopBtn = document.getElementById('stopBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const exportBtn = document.getElementById('exportBtn');
+            const statusDiv = document.getElementById('status');
+            const currentPositionDiv = document.getElementById('currentPosition');
+            const autoAdvanceToggle = document.getElementById('autoAdvanceToggle');
+            const tabsContainer = document.getElementById('tabsContainer');
+            const tabsElement = document.getElementById('tabs');
+            const tablesContainer = document.getElementById('tablesContainer');
+            const progressText = document.getElementById('progressText');
+            const progressFill = document.getElementById('progressFill');
+            const saveIndicator = document.getElementById('saveIndicator');
+            const mobileVoiceInfo = document.getElementById('mobileVoiceInfo');
+            
+            // Elementos del modal
+            const confirmModal = document.getElementById('confirmModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalMessage = document.getElementById('modalMessage');
+            const modalConfirmBtn = document.getElementById('modalConfirmBtn');
+            const modalCancelBtn = document.getElementById('modalCancelBtn');
+            const modalSaveBtn = document.getElementById('modalSaveBtn');
+            
+            // Variables de estado
+            let recognition;
+            let currentRow = 0;
+            let currentCol = 1;
+            let currentTable = 0;
+            let isListening = false;
+            let isContinuousMode = true;
+            let tables = [];
+            let pieceCount = 1;
+            let piecePrefix = "PIEZA";
+            let completedPieces = new Set();
+            let hasUnsavedChanges = false;
+            let pendingAction = null;
+            
+            // Límites iniciales por COTA
+            let limits = {
+                'A': { min: 11.80, max: 12.20 },
+                'B': { min: 4.90, max: 5.20 },
+                'C': { min: 3.90, max: 4.50 },
+                'D': { min: 8.00, max: 8.20 },
+                'E': { min: 38.80, max: 39.40 }
+            };
+            
+            // Datos guardados
+            let savedData = {
+                tables: [],
+                limits: {},
+                configuration: {}
+            };
+            
+            // Detectar si es móvil
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            if (isMobile) {
+                mobileVoiceInfo.style.display = 'block';
+            }
+            
+            // Inicializar la configuración de límites
+            function initializeLimitsConfig() {
+                renderLimitsGrid();
+            }
+            
+            // Renderizar la grilla de límites
+            function renderLimitsGrid() {
+                limitsGrid.innerHTML = '';
+                Object.keys(limits).forEach(cota => {
+                    const limitItem = document.createElement('div');
+                    limitItem.className = 'limit-item';
+                    limitItem.innerHTML = `
+                        <div class="limit-item-header">
+                            <span class="cota-name">${cota}</span>
+                            ${Object.keys(limits).length > 1 ? '<button class="delete-cota" data-cota="' + cota + '">X</button>' : ''}
+                        </div>
+                        <div class="limit-inputs">
+                            <input type="number" step="0.01" id="min-${cota}" value="${limits[cota].min}" placeholder="Mín">
+                            <input type="number" step="0.01" id="max-${cota}" value="${limits[cota].max}" placeholder="Máx">
+                        </div>
+                    `;
+                    limitsGrid.appendChild(limitItem);
+                });
+                
+                // Agregar event listeners a los botones de eliminar
+                document.querySelectorAll('.delete-cota').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const cotaToDelete = this.getAttribute('data-cota');
+                        deleteCota(cotaToDelete);
+                    });
+                });
+            }
+            
+            // Agregar nueva cota
+            function addNewCota() {
+                const name = newCotaNameInput.value.trim().toUpperCase();
+                const min = parseFloat(newCotaMinInput.value);
+                const max = parseFloat(newCotaMaxInput.value);
+                
+                if (!name) {
+                    showStatus('Error: El nombre de la cota no puede estar vacío.', 'error');
+                    return;
+                }
+                
+                if (limits[name]) {
+                    showStatus(`Error: La cota ${name} ya existe.`, 'error');
+                    return;
+                }
+                
+                if (isNaN(min) || isNaN(max)) {
+                    showStatus('Error: Los valores mínimo y máximo deben ser números válidos.', 'error');
+                    return;
+                }
+                
+                if (min >= max) {
+                    showStatus('Error: El valor mínimo debe ser menor que el máximo.', 'error');
+                    return;
+                }
+                
+                // Agregar la nueva cota
+                limits[name] = { min: min, max: max };
+                renderLimitsGrid();
+                markUnsavedChanges();
+                
+                // Limpiar campos
+                newCotaNameInput.value = '';
+                newCotaMinInput.value = '';
+                newCotaMaxInput.value = '';
+                
+                showStatus(`Cota ${name} agregada correctamente. Aplica los cambios para actualizar las tablas.`, 'success');
+            }
+            
+            // Eliminar cota
+            function deleteCota(cotaName) {
+                if (Object.keys(limits).length <= 1) {
+                    showStatus('Error: Debe haber al menos una cota.', 'error');
+                    return;
+                }
+                
+                delete limits[cotaName];
+                renderLimitsGrid();
+                markUnsavedChanges();
+                
+                showStatus(`Cota ${cotaName} eliminada. Aplica los cambios para actualizar las tablas.`, 'success');
+            }
+            
+            // Aplicar nuevos límites a todas las tablas
+            function applyNewLimits() {
+                // Actualizar el objeto limits con los nuevos valores
+                Object.keys(limits).forEach(cota => {
+                    const minInput = document.getElementById(`min-${cota}`);
+                    const maxInput = document.getElementById(`max-${cota}`);
+                    
+                    if (minInput && maxInput) {
+                        limits[cota].min = parseFloat(minInput.value) || limits[cota].min;
+                        limits[cota].max = parseFloat(maxInput.value) || limits[cota].max;
+                    }
+                });
+                
+                // Recrear todas las tablas con los nuevos límites y cotas
+                createTables();
+                markUnsavedChanges();
+                
+                showStatus('Límites y cotas actualizados correctamente en todas las piezas.', 'success');
+            }
+            
+            // Mostrar modal de confirmación
+            function showConfirmModal(title, message, action, showSaveOption = false) {
+                modalTitle.textContent = title;
+                modalMessage.textContent = message;
+                pendingAction = action;
+                
+                modalSaveBtn.style.display = showSaveOption ? 'flex' : 'none';
+                
+                confirmModal.classList.add('active');
+            }
+            
+            // Ocultar modal de confirmación
+            function hideConfirmModal() {
+                confirmModal.classList.remove('active');
+                pendingAction = null;
+            }
+            
+            // Marcar cambios no guardados
+            function markUnsavedChanges() {
+                hasUnsavedChanges = true;
+                saveIndicator.classList.remove('save-indicator');
+                saveIndicator.classList.add('unsaved-changes');
+                saveIndicator.title = 'Hay cambios sin guardar';
+                
+                // Marcar pestañas con cambios
+                document.querySelectorAll('.tab').forEach(tab => {
+                    if (!tab.classList.contains('completed')) {
+                        tab.classList.add('has-changes');
+                    }
+                });
+            }
+            
+            // Marcar cambios guardados
+            function markSavedChanges() {
+                hasUnsavedChanges = false;
+                saveIndicator.classList.remove('unsaved-changes');
+                saveIndicator.classList.add('save-indicator');
+                saveIndicator.title = 'Todos los cambios están guardados';
+                
+                // Quitar marca de cambios de las pestañas
+                document.querySelectorAll('.tab').forEach(tab => {
+                    tab.classList.remove('has-changes');
+                });
+            }
+            
+            // Guardar datos
+            function saveData() {
+                // Guardar datos de las tablas
+                savedData.tables = [];
+                tables.forEach((table, index) => {
+                    const tableData = {
+                        pieceName: `${piecePrefix} ${index + 1}`,
+                        data: []
+                    };
+                    
+                    table.querySelectorAll('tbody tr').forEach(tr => {
+                        const rowData = [];
+                        tr.querySelectorAll('td').forEach(td => {
+                            if (td.hasAttribute('contenteditable')) {
+                                rowData.push(td.textContent);
+                            }
+                        });
+                        tableData.data.push(rowData);
+                    });
+                    
+                    savedData.tables.push(tableData);
+                });
+                
+                // Guardar configuración
+                savedData.limits = JSON.parse(JSON.stringify(limits));
+                savedData.configuration = {
+                    pieceCount: pieceCount,
+                    piecePrefix: piecePrefix
+                };
+                
+                markSavedChanges();
+                showStatus('Datos guardados correctamente.', 'success');
+            }
+            
+            // Verificar si hay cambios sin guardar
+            function hasChanges() {
+                return hasUnsavedChanges;
+            }
+            
+            // Mostrar estado
+            function showStatus(message, type = 'success') {
+                statusDiv.textContent = message;
+                statusDiv.className = `status ${type}`;
+                setTimeout(() => {
+                    statusDiv.style.display = 'none';
+                }, 3000);
+            }
+            
+            // Verificar compatibilidad con la API de Web Speech
+            function initializeSpeechRecognition() {
+                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                    recognition = new SpeechRecognition();
+                    recognition.continuous = true;
+                    recognition.interimResults = false;
+                    recognition.lang = 'es-ES';
+                    
+                    recognition.onstart = function() {
+                        isListening = true;
+                        voiceBtn.innerHTML = '<span class="icon">🔴</span> Dictado Activo';
+                        voiceBtn.style.backgroundColor = '#e74c3c';
+                        showStatus('Dictado continuo ACTIVO. Hable ahora - el sistema avanzará automáticamente.', 'listening');
+                    };
+                    
+                    recognition.onresult = function(event) {
+                        let finalTranscript = '';
+                        for (let i = event.resultIndex; i < event.results.length; ++i) {
+                            if (event.results[i].isFinal) {
+                                finalTranscript += event.results[i][0].transcript;
+                            }
+                        }
+                        
+                        if (finalTranscript) {
+                            const currentCell = getCurrentCell();
+                            if (currentCell) {
+                                let value = finalTranscript.trim().replace(',', '.');
+                                // Limpiar el valor de posibles palabras no deseadas
+                                value = value.replace(/[^\d.-]/g, '');
+                                currentCell.textContent = value;
+                                validateCellValue(currentCell);
+                                markUnsavedChanges();
+                                
+                                showStatus(`Valor ingresado: ${value}`, 'success');
+                                
+                                if (isContinuousMode && autoAdvanceToggle.checked) {
+                                    setTimeout(() => autoAdvance(), 500);
+                                }
+                            }
+                        }
+                    };
+                    
+                    recognition.onerror = function(event) {
+                        console.log('Error de reconocimiento:', event.error);
+                        if (event.error === 'not-allowed') {
+                            showStatus('Permiso de micrófono denegado. Por favor, permite el acceso al micrófono.', 'error');
+                        } else if (event.error !== 'no-speech') {
+                            showStatus('Error en el reconocimiento: ' + event.error, 'error');
+                        }
+                    };
+                    
+                    recognition.onend = function() {
+                        if (isListening) {
+                            setTimeout(() => {
+                                if (isListening) {
+                                    try { 
+                                        recognition.start(); 
+                                    } catch (e) { 
+                                        console.log('Error al reconectar:', e);
+                                    }
+                                }
+                            }, 100);
+                        }
+                    };
+                } else {
+                    voiceBtn.disabled = true;
+                    voiceBtn.innerHTML = '<span class="icon">🎤</span> Voz No Soportada';
+                    showStatus('El reconocimiento de voz no es compatible con este navegador.', 'error');
+                }
+            }
+            
+            // Función para crear las tablas
+            function createTables() {
+                pieceCount = parseInt(pieceCountInput.value) || 1;
+                piecePrefix = piecePrefixInput.value.trim() || "PIEZA";
+                
+                if (pieceCount < 1) pieceCount = 1;
+                if (pieceCount > 20) pieceCount = 20;
+                
+                tablesContainer.innerHTML = '';
+                tabsElement.innerHTML = '';
+                tables = [];
+                completedPieces.clear();
+                
+                // Crear tabs y tablas
+                for (let i = 0; i < pieceCount; i++) {
+                    const pieceName = `${piecePrefix} ${i + 1}`;
+                    
+                    // Crear tab
+                    const tab = document.createElement('div');
+                    tab.className = `tab ${i === 0 ? 'active' : ''}`;
+                    tab.textContent = pieceName;
+                    tab.dataset.index = i;
+                    tab.addEventListener('click', () => {
+                        if (hasChanges()) {
+                            showConfirmModal(
+                                'Cambios sin guardar',
+                                'Tienes cambios sin guardar en la pieza actual. ¿Quieres guardar antes de cambiar?',
+                                () => switchTable(i),
+                                true
+                            );
+                        } else {
+                            switchTable(i);
+                        }
+                    });
+                    tabsElement.appendChild(tab);
+                    
+                    // Crear tabla
+                    const tableContainer = document.createElement('div');
+                    tableContainer.className = `table-container ${i === 0 ? 'active' : ''}`;
+                    tableContainer.id = `table-${i}`;
+                    
+                    const table = document.createElement('table');
+                    table.className = 'data-table';
+                    
+                    // Construir el HTML de la tabla dinámicamente
+                    let tableHTML = `
+                        <thead>
+                            <tr>
+                                <th>COTA</th>
+                    `;
+                    
+                    // Agregar columnas P1 a P10
+                    for (let p = 1; p <= 10; p++) {
+                        tableHTML += `<th>P${p}</th>`;
+                    }
+                    
+                    tableHTML += `
+                                <th>Mínimo</th>
+                                <th>Máximo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                    `;
+                    
+                    // Agregar filas para cada cota
+                    Object.keys(limits).forEach(cota => {
+                        tableHTML += `
+                            <tr data-row="${cota}">
+                                <td>${cota}</td>
+                        `;
+                        
+                        // Agregar celdas editables para P1-P10
+                        for (let p = 1; p <= 10; p++) {
+                            tableHTML += `<td data-col="${p}" contenteditable="true"></td>`;
+                        }
+                        
+                        // Agregar celdas de mínimos y máximos
+                        tableHTML += `
+                                <td class="min-value" data-value="${limits[cota].min}">${limits[cota].min.toFixed(2).replace('.', ',')}</td>
+                                <td class="max-value" data-value="${limits[cota].max}">${limits[cota].max.toFixed(2).replace('.', ',')}</td>
+                            </tr>
+                        `;
+                    });
+                    
+                    tableHTML += `</tbody>`;
+                    table.innerHTML = tableHTML;
+                    
+                    tableContainer.appendChild(table);
+                    tablesContainer.appendChild(tableContainer);
+                    tables.push(table);
+                    
+                    // Agregar event listeners a las celdas
+                    const cells = table.querySelectorAll('td[contenteditable="true"]');
+                    cells.forEach(cell => {
+                        cell.addEventListener('click', function() {
+                            const rowIndex = this.parentElement.rowIndex - 1;
+                            const colIndex = parseInt(this.getAttribute('data-col'));
+                            currentRow = rowIndex;
+                            currentCol = colIndex;
+                            updateActiveCell();
+                        });
+                        
+                        cell.addEventListener('input', function() {
+                            validateCellValue(this);
+                            markUnsavedChanges();
+                        });
+                    });
+                }
+                
+                tabsContainer.style.display = 'block';
+                currentTable = 0;
+                currentRow = 0;
+                currentCol = 1;
+                updateActiveCell();
+                updateProgress();
+                
+                showStatus(`Se han creado ${pieceCount} tablas con ${Object.keys(limits).length} cotas.`, 'success');
+            }
+            
+            // Función para cambiar entre tablas
+            function switchTable(index) {
+                document.querySelectorAll('.tab').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                document.querySelectorAll('.table-container').forEach(container => {
+                    container.classList.remove('active');
+                });
+                
+                document.querySelector(`.tab[data-index="${index}"]`).classList.add('active');
+                document.getElementById(`table-${index}`).classList.add('active');
+                
+                currentTable = index;
+                updateActiveCell();
+                hideConfirmModal();
+            }
+            
+            // Función para obtener la celda actual
+            function getCurrentCell() {
+                if (tables[currentTable]) {
+                    const rows = tables[currentTable].querySelectorAll('tbody tr');
+                    if (rows[currentRow]) {
+                        return rows[currentRow].querySelector(`td[data-col="${currentCol}"]`);
+                    }
+                }
+                return null;
+            }
+            
+            // Función para validar el valor de una celda
+            function validateCellValue(cell) {
+                const row = cell.parentElement;
+                const rowName = row.getAttribute('data-row');
+                const value = parseFloat(cell.textContent.replace(',', '.'));
+                
+                cell.classList.remove('out-of-range', 'within-range');
+                
+                if (!isNaN(value) && limits[rowName]) {
+                    const { min, max } = limits[rowName];
+                    cell.classList.add(value >= min && value <= max ? 'within-range' : 'out-of-range');
+                }
+                
+                updateProgress();
+            }
+            
+            // Función para verificar si una pieza está completa
+            function isPieceComplete(tableIndex) {
+                const table = tables[tableIndex];
+                const cells = table.querySelectorAll('td[contenteditable="true"]');
+                let filledCells = 0;
+                
+                cells.forEach(cell => {
+                    if (cell.textContent.trim() !== '') {
+                        filledCells++;
+                    }
+                });
+                
+                return filledCells === cells.length;
+            }
+            
+            // Función para actualizar el progreso
+            function updateProgress() {
+                const cotaCount = Object.keys(limits).length;
+                let totalCells = pieceCount * cotaCount * 10; // cotaCount filas × 10 columnas por pieza
+                let filledCells = 0;
+                
+                tables.forEach(table => {
+                    const cells = table.querySelectorAll('td[contenteditable="true"]');
+                    cells.forEach(cell => {
+                        if (cell.textContent.trim() !== '') {
+                            filledCells++;
+                        }
+                    });
+                });
+                
+                const progress = (filledCells / totalCells) * 100;
+                progressFill.style.width = `${progress}%`;
+                progressText.textContent = `Progreso: ${filledCells}/${totalCells} celdas (${Math.round(progress)}%)`;
+                
+                // Actualizar estado de las pestañas
+                document.querySelectorAll('.tab').forEach((tab, index) => {
+                    if (isPieceComplete(index)) {
+                        tab.classList.add('completed');
+                        completedPieces.add(index);
+                    } else {
+                        tab.classList.remove('completed');
+                        completedPieces.delete(index);
+                    }
+                });
+            }
+            
+            // Función para avanzar automáticamente
+            function autoAdvance() {
+                const cotaCount = Object.keys(limits).length;
+                
+                if (currentRow < cotaCount - 1) {
+                    currentRow++;
+                } else if (currentCol < 10) {
+                    currentCol++;
+                    currentRow = 0;
+                } else if (currentTable < pieceCount - 1) {
+                    // Marcar pieza actual como completada
+                    completedPieces.add(currentTable);
+                    document.querySelector(`.tab[data-index="${currentTable}"]`).classList.add('completed');
+                    
+                    // Avanzar a la siguiente pieza
+                    currentTable++;
+                    currentRow = 0;
+                    currentCol = 1;
+                    switchTable(currentTable);
+                    
+                    showStatus(`¡Pieza ${currentTable} completada! Avanzando a ${piecePrefix} ${currentTable + 1}.`, 'success');
+                } else {
+                    // Última pieza completada
+                    completedPieces.add(currentTable);
+                    document.querySelector(`.tab[data-index="${currentTable}"]`).classList.add('completed');
+                    
+                    showStatus('¡Todas las piezas han sido completadas!', 'success');
+                    stopListening();
+                }
+                
+                updateActiveCell();
+                updateProgress();
+            }
+            
+            // Función para detener el reconocimiento
+            function stopListening() {
+                if (recognition && isListening) {
+                    recognition.stop();
+                    isListening = false;
+                    voiceBtn.innerHTML = '<span class="icon">🎤</span> Iniciar Dictado Continuo';
+                    voiceBtn.style.backgroundColor = '';
+                    showStatus('Dictado detenido.', 'success');
+                }
+            }
+            
+            // Función para actualizar la celda activa
+            function updateActiveCell() {
+                tables.forEach(table => {
+                    table.querySelectorAll('.active-cell').forEach(cell => {
+                        cell.classList.remove('active-cell');
+                    });
+                });
+                
+                const currentCell = getCurrentCell();
+                if (currentCell) {
+                    currentCell.classList.add('active-cell');
+                    currentCell.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+                    updatePositionIndicator();
+                }
+            }
+            
+            // Función para actualizar el indicador de posición
+            function updatePositionIndicator() {
+                const pieceName = `${piecePrefix} ${currentTable + 1}`;
+                const rows = tables[currentTable].querySelectorAll('tbody tr');
+                const row = rows[currentRow];
+                const cota = row.cells[0].textContent;
+                const parameter = tables[currentTable].rows[0].cells[currentCol].textContent;
+                
+                currentPositionDiv.textContent = `Posición actual: ${pieceName} - COTA ${cota} - ${parameter}`;
+            }
+            
+            // Función para exportar a Excel
+            function exportToExcel() {
+                const wb = XLSX.utils.book_new();
+                
+                tables.forEach((table, index) => {
+                    const pieceName = `${piecePrefix} ${index + 1}`;
+                    const excelData = [];
+                    
+                    // Encabezados
+                    const headers = [];
+                    table.querySelectorAll('thead th').forEach(th => {
+                        headers.push(th.textContent);
+                    });
+                    excelData.push(headers);
+                    
+                    // Datos
+                    table.querySelectorAll('tbody tr').forEach(tr => {
+                        const rowData = [];
+                        tr.querySelectorAll('td').forEach((td, tdIndex) => {
+                            if (td.classList.contains('min-value') || td.classList.contains('max-value')) {
+                                rowData.push(parseFloat(td.getAttribute('data-value')));
+                            } else if (td.hasAttribute('contenteditable')) {
+                                const textValue = td.textContent.trim();
+                                const numericValue = parseFloat(textValue.replace(',', '.'));
+                                rowData.push(isNaN(numericValue) ? textValue : numericValue);
+                            } else {
+                                rowData.push(td.textContent);
+                            }
+                        });
+                        excelData.push(rowData);
+                    });
+                    
+                    const ws = XLSX.utils.aoa_to_sheet(excelData);
+                    
+                    // Aplicar formato
+                    const range = XLSX.utils.decode_range(ws['!ref']);
+                    for (let R = 1; R <= range.e.r; R++) {
+                        for (let C = 1; C <= headers.length; C++) {
+                            const cellAddress = XLSX.utils.encode_cell({r: R, c: C});
+                            if (ws[cellAddress] && typeof ws[cellAddress].v === 'number') {
+                                ws[cellAddress].z = '0.00';
+                            }
+                        }
+                    }
+                    
+                    if (!ws['!cols']) ws['!cols'] = [];
+                    for (let i = 0; i < headers.length; i++) {
+                        ws['!cols'][i] = { width: 12 };
+                    }
+                    
+                    XLSX.utils.book_append_sheet(wb, ws, pieceName);
+                });
+                
+                XLSX.writeFile(wb, `${piecePrefix}_todas_las_piezas.xlsx`);
+                
+                showStatus(`Se han exportado ${pieceCount} piezas a Excel.`, 'success');
+            }
+            
+            // Event Listeners
+            createTablesBtn.addEventListener('click', function() {
+                if (hasChanges()) {
+                    showConfirmModal(
+                        'Cambios sin guardar',
+                        'Tienes cambios sin guardar. ¿Quieres guardar antes de crear nuevas tablas?',
+                        createTables,
+                        true
+                    );
+                } else {
+                    createTables();
+                }
+            });
+            
+            saveDataBtn.addEventListener('click', saveData);
+            
+            applyLimitsBtn.addEventListener('click', function() {
+                if (hasChanges()) {
+                    showConfirmModal(
+                        'Aplicar cambios',
+                        'Al aplicar nuevos límites se recrearán todas las tablas. ¿Quieres guardar los datos actuales primero?',
+                        applyNewLimits,
+                        true
+                    );
+                } else {
+                    applyNewLimits();
+                }
+            });
+            
+            addCotaBtn.addEventListener('click', addNewCota);
+            
+            // Agregar cota con Enter
+            newCotaNameInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') addNewCota();
+            });
+            newCotaMinInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') addNewCota();
+            });
+            newCotaMaxInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') addNewCota();
+            });
+            
+            // Modal event listeners
+            modalConfirmBtn.addEventListener('click', function() {
+                if (pendingAction) {
+                    pendingAction();
+                }
+                hideConfirmModal();
+            });
+            
+            modalCancelBtn.addEventListener('click', hideConfirmModal);
+            
+            modalSaveBtn.addEventListener('click', function() {
+                saveData();
+                if (pendingAction) {
+                    pendingAction();
+                }
+                hideConfirmModal();
+            });
+            
+            voiceBtn.addEventListener('click', function() {
+                if (!recognition) return;
+                if (isListening) stopListening();
+                else {
+                    try {
+                        recognition.start();
+                        isListening = true;
+                    } catch (error) {
+                        showStatus('Error al iniciar el reconocimiento: ' + error.message, 'error');
+                    }
+                }
+            });
+            
+            nextBtn.addEventListener('click', function() {
+                const cotaCount = Object.keys(limits).length;
+                if (currentRow < cotaCount - 1) {
+                    currentRow++;
+                    updateActiveCell();
+                } else {
+                    showStatus('¡Has llegado al final de esta columna!', 'success');
+                }
+            });
+            
+            prevBtn.addEventListener('click', function() {
+                if (currentRow > 0) {
+                    currentRow--;
+                    updateActiveCell();
+                } else {
+                    showStatus('¡Estás en la primera fila de esta columna!', 'success');
+                }
+            });
+            
+            nextColumnBtn.addEventListener('click', function() {
+                if (currentCol < 10) {
+                    currentCol++;
+                    currentRow = 0;
+                    updateActiveCell();
+                } else {
+                    showStatus('¡Has completado todas las columnas de esta pieza!', 'success');
+                }
+            });
+            
+            nextTableBtn.addEventListener('click', function() {
+                if (currentTable < pieceCount - 1) {
+                    if (hasChanges()) {
+                        showConfirmModal(
+                            'Cambios sin guardar',
+                            'Tienes cambios sin guardar en la pieza actual. ¿Quieres guardar antes de cambiar?',
+                            () => {
+                                currentTable++;
+                                switchTable(currentTable);
+                            },
+                            true
+                        );
+                    } else {
+                        currentTable++;
+                        switchTable(currentTable);
+                    }
+                } else {
+                    showStatus('¡Ya estás en la última pieza!', 'success');
+                }
+            });
+            
+            stopBtn.addEventListener('click', stopListening);
+            
+            clearBtn.addEventListener('click', function() {
+                showConfirmModal(
+                    'Limpiar todas las tablas',
+                    '¿Estás seguro de que quieres limpiar TODAS las tablas? Se borrarán todos los datos y no se podrán recuperar.',
+                    function() {
+                        tables.forEach(table => {
+                            table.querySelectorAll('td[contenteditable="true"]').forEach(cell => {
+                                cell.textContent = '';
+                                cell.classList.remove('out-of-range', 'within-range');
+                            });
+                        });
+                        currentRow = 0;
+                        currentCol = 1;
+                        currentTable = 0;
+                        switchTable(0);
+                        updateActiveCell();
+                        completedPieces.clear();
+                        updateProgress();
+                        markUnsavedChanges();
+                        
+                        showStatus('Todas las tablas han sido limpiadas.', 'success');
+                    }
+                );
+            });
+            
+            exportBtn.addEventListener('click', function() {
+                if (hasChanges()) {
+                    showConfirmModal(
+                        'Exportar con cambios sin guardar',
+                        'Tienes cambios sin guardar. ¿Quieres guardar antes de exportar?',
+                        exportToExcel,
+                        true
+                    );
+                } else {
+                    exportToExcel();
+                }
+            });
+            
+            // Prevenir cierre de página con cambios sin guardar
+            window.addEventListener('beforeunload', function(e) {
+                if (hasChanges()) {
+                    e.preventDefault();
+                    e.returnValue = 'Tienes cambios sin guardar. ¿Estás seguro de que quieres salir?';
+                    return 'Tienes cambios sin guardar. ¿Estás seguro de que quieres salir?';
+                }
+            });
+            
+            // Navegación por teclado
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'ArrowDown') {
+                    event.preventDefault();
+                    nextBtn.click();
+                } else if (event.key === 'ArrowUp') {
+                    event.preventDefault();
+                    prevBtn.click();
+                } else if (event.key === 'ArrowRight') {
+                    event.preventDefault();
+                    if (event.ctrlKey) nextTableBtn.click();
+                    else nextColumnBtn.click();
+                } else if (event.key === 'Escape') {
+                    event.preventDefault();
+                    stopBtn.click();
+                }
+            });
+            
+            // Inicializar la aplicación
+            initializeLimitsConfig();
+            initializeSpeechRecognition();
+            createTables();
+        });
+    </script>
+</body>
+</html>
